@@ -1,0 +1,46 @@
+### OSX ###
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Python
+*.py[cod]
+__pycache__
+
+# Logs
+*.log.*
+*.log
+
+# Cache
+.cache
+.pytest_cache/
+.sass-cache
+
+# Sublime
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+
+# Pycharm
+.idea/*
+
+# C9
+.c9
+
+# Vim
+*~
+*.swp
+*.swo
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Translations
+*.mo
+*.pot
+
+# Virtual environments
+.env
+env
