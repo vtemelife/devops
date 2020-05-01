@@ -12,8 +12,6 @@ services:
       - postgres_data:/var/lib/postgresql/data
     env_file:
       - ./server/.env
-    ports:
-      - "5434:5434"
     healthcheck:
       test: "PGPASSWORD=vteme psql --host 127.0.0.1 --dbname vteme_staging_db --username vteme --quiet --no-align --tuples-only -c 'SELECT 1;'"
       interval: 30s
@@ -22,8 +20,6 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.7.14-alpine
-    ports:
-      - "5674:5674"
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       timeout: 5s
@@ -66,11 +62,11 @@ services:
       celerybeat:
         condition: service_started
     healthcheck:
-      test: "curl --fail localhost:8002/api/doc || exit 1"
+      test: "curl --fail localhost:8000/api/doc || exit 1"
       interval: 5s
       timeout: 10s
       retries: 5
-    command: ./compose/start_staging.sh
+    command: ./compose/start.sh
 
   sockjs:
     build:
@@ -101,4 +97,4 @@ services:
       sockjs:
         condition: service_started
     ports:
-      - "3000:3000"
+      - "8080:80"
