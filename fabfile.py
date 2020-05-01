@@ -14,19 +14,6 @@ REMOTE_HOST = os.environ['REMOTE_HOST']
 REMOTE_PROJECT_PATH = os.environ['REMOTE_PROJECT_PATH']
 
 
-# REMOTE_PATH_SITE = '/home/{}/vteme'.format(REMOTE_USER)
-# REMOTE_PATH_BACKUPS = '/home/{}/backups'.format(REMOTE_USER)
-
-# for apply
-# psql -f db_2019-09-04_15\:48.sql postgres
-
-
-@task(hosts=(REMOTE_HOST, ))
-def clean(c):
-    with c.cd(REMOTE_PATH_SITE):
-        c.run('docker system prune -a')
-
-
 @task(hosts=(REMOTE_HOST, ))
 def backup(c):
     date = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M")
@@ -82,6 +69,14 @@ def _run(connection, command):
 
 
 @task(hosts=(REMOTE_HOST, ))
+def clean(connection, instance=None):
+    instance = instance or 'staging'
+    remote_path = os.path.join(REMOTE_PROJECT_PATH, instance)
+    with connection.cd(remote_path):
+        _run(connection, 'docker system prune -a')
+
+
+@task(hosts=(REMOTE_HOST, ))
 def deploy(connection, instance=None):
     instance = instance or 'staging'
     remote_path = os.path.join(REMOTE_PROJECT_PATH, instance)
@@ -95,6 +90,11 @@ def deploy(connection, instance=None):
 def deploydevops(connection, instance=None):
     instance = instance or 'staging'
     remote_path = os.path.join(REMOTE_PROJECT_PATH, instance)
+    rsync(
+        connection,
+        os.path.join(LOCAL_DEVOPS_PATH, 'envs'),
+        os.path.join(remote_path, 'envs'),
+    )
     rsync(
         connection,
         os.path.join(LOCAL_DEVOPS_PATH, 'envs', 'server_{}.env'.format(instance)),
