@@ -82,26 +82,33 @@ def _run(connection, command):
 
 
 @task(hosts=(REMOTE_HOST, ))
-def deploy(connection, prod=None):
-    remote_path = os.path.join(REMOTE_PROJECT_PATH, 'production' if prod else 'staging')
+def deploy(connection, instance=None):
+    instance = instance or 'staging'
+    remote_path = os.path.join(REMOTE_PROJECT_PATH, instance)
     with connection.cd(remote_path):
-        _run(connection, 'docker-compose build --build-arg NGINX_MODE={}'.format('production' if prod else 'staging',))
+        _run(connection, 'docker-compose build')
         _run(connection, 'docker-compose stop')
         _run(connection, 'docker-compose up -d')
 
 
 @task(hosts=(REMOTE_HOST, ))
-def deploydevops(connection, prod=None):
-    remote_path = os.path.join(REMOTE_PROJECT_PATH, 'production' if prod else 'staging')
+def deploydevops(connection, instance=None):
+    instance = instance or 'staging'
+    remote_path = os.path.join(REMOTE_PROJECT_PATH, instance)
     rsync(
         connection,
-        os.path.join(LOCAL_DEVOPS_PATH, 'envs', 'server.env'),
-        os.path.join(remote_path, 'server', '.docker.env'),
+        os.path.join(LOCAL_DEVOPS_PATH, 'envs', 'server_{}.env'.format(instance)),
+        os.path.join(remote_path, 'server', '.env'),
     )
     rsync(
         connection,
-        os.path.join(LOCAL_DEVOPS_PATH, 'envs', 'sockjs.env'),
-        os.path.join(remote_path, 'sockjs', '.docker.env'),
+        os.path.join(LOCAL_DEVOPS_PATH, 'envs', 'sockjs_{}.env'.format(instance)),
+        os.path.join(remote_path, 'sockjs', '.env'),
+    )
+    rsync(
+        connection,
+        os.path.join(LOCAL_DEVOPS_PATH, 'envs', 'client_{}.env'.format(instance)),
+        os.path.join(remote_path, 'client', '.env'),
     )
     rsync(
         connection,
@@ -125,15 +132,17 @@ def deploydevops(connection, prod=None):
     )
     rsync(
         connection,
-        os.path.join(LOCAL_DEVOPS_PATH, 'docker-compose.yml'),
+        os.path.join(LOCAL_DEVOPS_PATH, 'docker-compose-{}.yml'.format(instance)),
         os.path.join(remote_path, 'docker-compose.yml'),
     )
 
 
 @task(hosts=(REMOTE_HOST, ))
-def deployclient(connection, prod=None):
+def deployclient(connection, instance=None):
+    instance = instance or 'staging'
     os.system("cd {} && make build".format(LOCAL_CLIENT_PATH))
-    remote_path = os.path.join(REMOTE_PROJECT_PATH, 'production' if prod else 'staging', 'client')
+    remote_path = os.path.join(REMOTE_PROJECT_PATH, instance, 'client')
+    _run(connection, 'mkdir -p {}'.format(remote_path))
     rsync(
         connection,
         os.path.join(LOCAL_CLIENT_PATH, 'build'),
@@ -142,20 +151,26 @@ def deployclient(connection, prod=None):
 
 
 @task(hosts=(REMOTE_HOST, ))
-def deployserver(connection, prod=None):
+def deployserver(connection, instance=None):
+    instance = instance or 'staging'
+    remote_path = os.path.join(REMOTE_PROJECT_PATH, instance)
+    _run(connection, 'mkdir -p {}'.format(remote_path))
     rsync(
         connection,
         LOCAL_SERVER_PATH,
-        os.path.join(REMOTE_PROJECT_PATH, 'production' if prod else 'staging'),
+        remote_path,
         **SERVER_RSYNC_OPTS,
     )
 
 
 @task(hosts=(REMOTE_HOST, ))
-def deploysockjs(connection, prod=None):
+def deploysockjs(connection, instance=None):
+    instance = instance or 'staging'
+    remote_path = os.path.join(REMOTE_PROJECT_PATH, instance)
+    _run(connection, 'mkdir -p {}'.format(remote_path))
     rsync(
         connection,
         LOCAL_SOCKJS_PATH,
-        os.path.join(REMOTE_PROJECT_PATH, 'production' if prod else 'staging'),
+        remote_path,
         **SERVER_RSYNC_OPTS,
     )
