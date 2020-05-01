@@ -1,4 +1,4 @@
-# Vteme django server
+# Vteme devops
 
 ## Install system dependencies (Ubuntu / OSX)
 
@@ -45,14 +45,14 @@ source env/bin/activate
 ### Activate environment:
 
 ```
-cp envsets/env.dev .env
-source .env
+cp envsets/local_dev.env .local.env
+source .local.env
 ```
 
 ### Install project requirements:
 
 ```
-make install
+pip install -r requirements.txt
 ```
 
 ## Deploy env:
