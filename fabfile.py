@@ -42,7 +42,7 @@ def _run(connection, command):
 
 
 @task(hosts=(REMOTE_HOST, ))
-def clean(connection, instance=None):
+def cleandocker(connection, instance=None):
     instance = instance or 'staging'
     remote_path = os.path.join(REMOTE_PROJECT_PATH, instance)
     with connection.cd(remote_path):
@@ -54,8 +54,16 @@ def backup(connection, instance=None):
     instance = instance or 'staging'
     remote_path = os.path.join(REMOTE_PROJECT_PATH, instance)
     with connection.cd(remote_path):
-        _run(connection, 'docker-compose build')
+        _run(connection, 'docker-compose build backup')
         _run(connection, 'docker-compose run backup')
+
+
+@task(hosts=(REMOTE_HOST, ))
+def cleanbackup(connection, instance=None):
+    instance = instance or 'staging'
+    remote_path = os.path.join(REMOTE_PROJECT_PATH, instance, 'backups')
+    with connection.cd(remote_path):
+        _run(connection, 'rm *.zip')
 
 
 @task(hosts=(REMOTE_HOST, ))
