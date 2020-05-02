@@ -63,8 +63,8 @@ services:
         condition: service_started
     healthcheck:
       test: "curl --fail localhost:8000/api/doc || exit 1"
-      interval: 5s
-      timeout: 10s
+      interval: 10s
+      timeout: 20s
       retries: 5
     command: ./compose/start.sh
 
