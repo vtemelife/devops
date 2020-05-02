@@ -55,6 +55,14 @@ source .local.env
 pip install -r requirements.txt
 ```
 
+## Ask administrator to get envs folder with env configs and put it in root
+
+```
+devops % ls envs
+client_production.env   server_production.env   sockjs_production.env   ssl
+client_staging.env      server_staging.env      sockjs_staging.env
+```
+
 ## Deploy env:
 
 ```
