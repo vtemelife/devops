@@ -58,11 +58,13 @@ pip install -r requirements.txt
 ## Deploy env:
 
 ```
-make deploy
+make deploy-stag
+make deploy-prod
 ```
 
 ## Backup static and DB:
 
 ```
-make backup
+make backup-stag
+make backup-prod
 ```

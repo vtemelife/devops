@@ -1,8 +1,14 @@
 install:
 	pip install -r requirements.txt
 
-deploy:
-	fab deploy
+deploy-stag:
+	fab deploy --instance=staging
 
-backup:
-	fab backup
+deploy-prod:
+	fab deploy --instance=production
+
+backup-stag:
+	fab backup --instance=staging
+
+backup-prod:
+	fab backup --instance=production

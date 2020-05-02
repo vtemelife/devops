@@ -98,3 +98,15 @@ services:
         condition: service_started
     ports:
       - "3000:3000"
+  
+  backup:
+    build:
+      context: ./backups
+      dockerfile: ./compose/Dockerfile
+    volumes:
+      - ./backups:/app/backups
+      - media_data:/app/server_media
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ./compose/backup_staging.sh
