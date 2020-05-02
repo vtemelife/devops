@@ -81,7 +81,6 @@ def deploy(connection, instance=None):
     instance = instance or 'staging'
     remote_path = os.path.join(REMOTE_PROJECT_PATH, instance)
     with connection.cd(remote_path):
-        _run(connection, 'ls')
         _run(connection, 'docker-compose build')
         _run(connection, 'docker-compose stop')
         _run(connection, 'docker-compose up -d')
