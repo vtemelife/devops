@@ -99,3 +99,15 @@ services:
     ports:
       - "80:80"
       - "443:443"
+
+  backup:
+    build:
+      context: ./backups
+      dockerfile: ./compose/Dockerfile
+    volumes:
+      - ./backups:/app/backups
+      - media_data:/app/server_media
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ./compose/backup_production.sh
