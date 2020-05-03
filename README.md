@@ -66,15 +66,37 @@ client_staging.env      server_staging.env      sockjs_staging.env
 ## Deploy env:
 
 ```
-make deploy-stag
-make deploy-prod
+make deploy
+```
+
+### Deploy only staging
+
+```
+make deployst
+```
+
+### Deploy only production
+
+```
+make deploypr
 ```
 
 ## Backup static and DB:
 
 ```
-make backup-stag
-make backup-prod
+make backup
+```
+
+### Backup only staging
+
+```
+make backupst
+```
+
+### Backup only production
+
+```
+make backuppr
 ```
 
 ## Clean images on staging
@@ -105,4 +127,10 @@ In shell:
 ```
 from apps.storage.models import Image
 Image.objects.all().update(image='default.png')
+Ctrl-D
+```
+
+```
+python manage.py generate_thumbnails
+exit
 ```
