@@ -76,3 +76,33 @@ make deploy-prod
 make backup-stag
 make backup-prod
 ```
+
+## Clean images on staging
+
+```
+ssh to server
+cd vtemelife/staging
+```
+
+### Remove images
+
+```
+docker-compose run backup bash
+cd ../server_media
+find . \! -name 'default.png' -delete
+exit
+```
+
+### Update storage table
+
+```
+docker-compose run django bash
+python manage.py shell
+```
+
+In shell:
+
+```
+from apps.storage.models import Image
+Image.objects.all().update(image='default.png')
+```
