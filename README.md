@@ -63,40 +63,22 @@ client_production.env   server_production.env   sockjs_production.env   ssl
 client_staging.env      server_staging.env      sockjs_staging.env
 ```
 
-## Deploy env:
+### Deploy staging
 
 ```
 make deploy
 ```
 
-### Deploy only staging
+### Deploy production
 
 ```
-make deployst
-```
-
-### Deploy only production
-
-```
-make deploypr
+make deployproduction
 ```
 
 ## Backup static and DB:
 
 ```
 make backup
-```
-
-### Backup only staging
-
-```
-make backupst
-```
-
-### Backup only production
-
-```
-make backuppr
 ```
 
 ## Clean images on staging
