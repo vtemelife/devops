@@ -42,7 +42,7 @@ celerybeat.pid
 *.pot
 
 # Virtual environments
-.local.env
+.env
 .docker.env
 env
 envs
